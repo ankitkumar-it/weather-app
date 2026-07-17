@@ -1,13 +1,17 @@
 body{
     font-family: Arial, sans-serif;
-    background:#e3f2fd;
-
+    background: linear-gradient(
+135deg,
+#74ebd5,
+#ACB6E5
+);
     display:flex;
     justify-content:center;
     align-items:center;
 
-    height:100vh;
+    min-height:100vh;
     margin:0;
+    padding:20px;
 }
 
 .container{
@@ -22,23 +26,51 @@ body{
 
     text-align:center;
 
-    width:350px;
+ 
+    width:600px;
+    max-width:90%;
 }
 
 input{
+   width:85%;
+    padding:15px;
 
-    width:80%;
+    border:none;
+    border-radius:12px;
 
-    padding:10px;
+    font-size:16px;
 
-    margin:10px 0;
+    outline:none;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+
+    margin-bottom:15px;
+
 }
 
+input:focus{
+    border-color:#1976d2;
+}
 button{
+    padding:12px 18px;
 
-    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+
+    background:#1976d2;
+    color:white;
+
+    font-size:15px;
 
     cursor:pointer;
+
+    transition:0.3s;
+
+    margin:5px;
+}
+
+button:hover{
+    transform:scale(1.05);
 }
 #weatherResult{
     margin-top:20px;
@@ -51,6 +83,191 @@ button{
 #weatherResult{
     margin-top:20px;
     padding:15px;
-    border-radius:10px;
+    
     background:#f5f5f5;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+}
+#weatherResult p{
+    margin:12px 0;
+}
+
+#weatherResult h1{
+    font-size:60px;
+    margin:10px 0;
+}
+body {
+    transition: background 0.8s ease;
+}
+.sunny {
+    background: linear-gradient(to right, #fceabb, #f8b500);
+}
+
+.rainy {
+    background: linear-gradient(to right, #4e54c8, #8f94fb);
+}
+
+.cloudy {
+    background: linear-gradient(to right, #bdc3c7, #2c3e50);
+}
+
+.clear {
+    background: linear-gradient(to right, #56ccf2, #2f80ed);
+}
+
+.night {
+    background: linear-gradient(to right, #141e30, #243b55);
+}
+#weatherResult {
+    transition: all 0.5s ease;
+}
+.snowy {
+    background: linear-gradient(to right, #e6dada, #274046);
+}
+
+.stormy {
+    background: linear-gradient(to right, #232526, #414345);
+}
+.dark-mode{
+    background:#121212;
+    color:white;
+}
+
+.dark-mode .container{
+    background:#1e1e1e;
+    color:white;
+}
+
+.dark-mode #weatherResult{
+    background:#2c2c2c;
+    color:white;
+}
+
+.dark-mode input{
+    background:#333;
+    color:white;
+    border:1px solid #555;
+}
+.button-group{
+    margin-top:10px;
+}
+
+#forecast{
+    margin-top:20px;
+
+    display:flex;
+    justify-content:center;
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+.forecast-card{
+
+    background:#f5f5f5;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    width:80px;
+
+    text-align:center;
+
+    box-shadow:0 0 5px rgba(0,0,0,0.1);
+
+    transition: 0.3s;
+cursor: pointer;
+}
+
+.forecast-card h4{
+    margin:5px 0;
+}
+
+.forecast-card p{
+    margin:5px 0;
+}
+.forecast-card:hover{
+    transform: translateY(-5px);
+}
+.tagline{
+    color:#666;
+    margin-top:-10px;
+    margin-bottom:25px;
+    font-size:16px;
+}
+h1{
+    font-size:33px;
+    margin-bottom:10px;
+}
+#weatherResult h3{
+    color:#555;
+    font-weight:500;
+}
+.temp{
+    font-size:70px;
+    margin:10px 0;
+    color:#1976d2;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+    margin-top:20px;
+}
+
+.stat-card{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.stat-card h3{
+    margin:0;
+    font-size:24px;
+}
+
+.stat-card p{
+    font-size:20px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.stat-card span{
+    color:#666;
+}
+.weather-icon{
+    font-size:90px;
+    margin:15px 0;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+    0%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+    100%{
+        transform:translateY(0px);
+    }
+}
+.loader{
+    width:50px;
+    height:50px;
+    border:5px solid #ddd;
+    border-top:5px solid #1976d2;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:30px auto;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
 }

@@ -5,6 +5,7 @@ async function getWeather() {
 
     document.getElementById("weatherResult").innerHTML =
     "<h3>Loading...</h3>";
+    getForecast(city);
 
     const apiKey =
     "cfc16367764dfe4f9d49a18b86a8b747";
@@ -28,43 +29,161 @@ async function getWeather() {
         }
 
         let condition = data.weather[0].main;
+        let message = "";
+
+if(condition === "Clear"){
+    message = "☀️ Perfect day to go outside!";
+}
+else if(condition === "Clouds"){
+    message = "☁️ A calm cloudy day.";
+}
+else if(condition === "Rain"){
+    message = "🌧️ Don't forget your umbrella!";
+}
+else if(condition === "Thunderstorm"){
+    message = "⛈️ Stay indoors and stay safe!";
+}
+else if(condition === "Snow"){
+    message = "❄️ Enjoy the snow!";
+}
+else{
+    message = "🌍 Have a great day!";
+}
+
+// clear old animation first
+        const anim = document.getElementById("weather-animation");
+        anim.innerHTML = "";
+
+        if (condition === "Rain" || condition === "Drizzle") {
+            createRain();
+        }
+        else if (condition === "Snow") {
+            createSnow();
+        }
+        else {
+    // no animation for other weather
+        anim.innerHTML = "";
+        }
+        setBackground(condition);
         let icon = "🌍";
 
-        if(condition === "Clear"){
-            icon = "☀️";
-        }
-        else if(condition === "Clouds"){
-            icon = "☁️";
-        }
-        else if(condition === "Rain"){
-            icon = "🌧️";
-        }
-        else if(condition === "Thunderstorm"){
-            icon = "⛈️";
-        }
-        else if(condition === "Snow"){
-            icon = "❄️";
-        }
+if(condition === "Clear"){
+    icon = "☀️";
+}
+else if(condition === "Clouds"){
+    icon = "☁️";
+}
+else if(condition === "Rain"){
+    icon = "🌧️";
+}
+else if(condition === "Thunderstorm"){
+    icon = "⛈️";
+}
+else if(condition === "Snow"){
+    icon = "❄️";
+}
         let now = new Date();
 
         let dateTime =
         now.toLocaleString();
+        let sunrise =
+        new Date(data.sys.sunrise * 1000).toLocaleTimeString();
+
+        let sunset =
+        new Date(data.sys.sunset * 1000).toLocaleTimeString();
         document.getElementById("weatherResult").innerHTML = `
-            <h2>${data.name}</h2>
+            <h2>${data.name}, ${data.sys.country}</h2>
             <p>${dateTime}</p>
-            <h1>${icon}</h1>
-            <p>Temperature: ${data.main.temp} °C</p>
-            <p>Humidity: ${data.main.humidity}%</p>
-            <p>Wind Speed: ${data.wind.speed} m/s</p>
-            <p>Condition: ${condition}</p>
+
+            <div class="weather-icon">${icon}</div>
+
+            <h1 class="temp">${Math.round(data.main.temp)}°C</h1>
+<div class="stats">
+
+    <div class="stat-card">
+        <h3>🤗</h3>
+        <p>${Math.round(data.main.feels_like)}°C</p>
+        <span>Feels Like</span>
+    </div>
+
+    <div class="stat-card">
+        <h3>💧</h3>
+        <p>${data.main.humidity}%</p>
+        <span>Humidity</span>
+    </div>
+
+    <div class="stat-card">
+        <h3>🧭</h3>
+        <p>${data.main.pressure}</p>
+        <span>Pressure</span>
+    </div>
+
+    <div class="stat-card">
+        <h3>🌬️</h3>
+        <p>${data.wind.speed}</p>
+        <span>Wind</span>
+    </div>
+
+</div>
+
+<p>🌤️ Condition: ${condition}</p>
+
+            <p>🌅 Sunrise: ${sunrise}</p>
+            <p>🌇 Sunset: ${sunset}</p>
+            <p><b>${message}</b></p>
 `       ;
 
-    } catch(error){
+    }catch(error){
 
-         console.log(error);
+    console.log(error);
 
-        document.getElementById("weatherResult").innerHTML =
-       "<h3>Error fetching weather data</h3>";
+    document.getElementById("weatherResult").innerHTML =
+"<div class='loader'></div>";
+}
+    }
+
+function getLocationWeather(){
+
+    alert("Button clicked");
+
+    if(navigator.geolocation){
+
+        navigator.geolocation.getCurrentPosition(
+
+            async function(position){
+
+              alert("Location received");
+
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+
+              const apiKey =
+              "cfc16367764dfe4f9d49a18b86a8b747";
+
+              const url =
+             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+              const response = await fetch(url);
+
+              const data = await response.json();
+
+              document.getElementById("city").value =
+              data.name;
+
+              getWeather();
+        },
+
+        function(error){
+
+             alert("Location Error: " + error.message);
+
+        }
+
+);
+
+    } else {
+
+        alert("Geolocation not supported");
     }
 }
 document.getElementById("city")
@@ -75,3 +194,119 @@ document.getElementById("city")
     }
 
 });
+function setBackground(condition) {
+
+    document.body.className = ""; // reset old theme
+
+    if (condition === "Clear") {
+        document.body.classList.add("clear");
+    }
+    else if (condition === "Clouds") {
+        document.body.classList.add("cloudy");
+    }
+    else if (condition === "Rain" || condition === "Drizzle") {
+        document.body.classList.add("rainy");
+    }
+    else if (condition === "Thunderstorm") {
+        document.body.classList.add("stormy");
+    }
+    else if (condition === "Snow") {
+        document.body.classList.add("snowy");
+    }
+    else {
+        document.body.classList.add("default");
+    }
+}
+function createRain() {
+
+    const container = document.getElementById("weather-animation");
+    container.innerHTML = "";
+
+    for (let i = 0; i < 80; i++) {
+
+        let drop = document.createElement("div");
+        drop.classList.add("drop");
+
+        drop.style.left = Math.random() * 100 + "vw";
+        drop.style.animationDuration = (0.5 + Math.random()) + "s";
+        drop.style.opacity = Math.random();
+
+        container.appendChild(drop);
+    }
+}
+function createSnow() {
+
+    const container = document.getElementById("weather-animation");
+    container.innerHTML = "";
+
+    for (let i = 0; i < 60; i++) {
+
+        let snow = document.createElement("div");
+        snow.classList.add("snow");
+
+        snow.style.left = Math.random() * 100 + "vw";
+        snow.style.animationDuration = (3 + Math.random() * 3) + "s";
+        snow.style.opacity = Math.random();
+
+        container.appendChild(snow);
+    }
+}
+function toggleDarkMode(){
+
+    document.body.classList.toggle("dark-mode");
+
+}
+async function getForecast(city){
+
+    const apiKey =
+    "cfc16367764dfe4f9d49a18b86a8b747";
+
+    const url =
+    `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+
+    const response = await fetch(url);
+
+    const data = await response.json();
+
+    let forecastHTML = "";
+
+for(let i = 0; i < 40; i += 8){
+
+    let day = new Date(data.list[i].dt_txt)
+    .toLocaleDateString("en-US", {
+        weekday: "short"
+    });
+
+    let temp =
+    Math.round(data.list[i].main.temp);
+
+    let condition =
+    data.list[i].weather[0].main;
+
+    let icon = "🌍";
+
+    if(condition === "Clear"){
+        icon = "☀️";
+    }
+    else if(condition === "Clouds"){
+        icon = "☁️";
+    }
+    else if(condition === "Rain"){
+        icon = "🌧️";
+    }
+    else if(condition === "Snow"){
+        icon = "❄️";
+    }
+
+    forecastHTML += `
+        <div class="forecast-card">
+            <h4>${day}</h4>
+            <p>${icon}</p>
+            <p>${temp}°C</p>
+        </div>
+    `;
+}
+
+document.getElementById("forecast").innerHTML =
+forecastHTML;
+}
