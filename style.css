@@ -180,6 +180,10 @@ body {
     transition: 0.3s;
 cursor: pointer;
 }
+.dark-mode .forecast-card{
+    background:#f5f5f5;
+    color:black;
+}
 
 .forecast-card h4{
     margin:5px 0;
@@ -224,7 +228,10 @@ h1{
     border-radius:15px;
     box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
-
+.dark-mode .stat-card{
+    background:#f5f5f5;
+    color:black;
+}
 .stat-card h3{
     margin:0;
     font-size:24px;
@@ -242,7 +249,7 @@ h1{
 .weather-icon{
     font-size:90px;
     margin:15px 0;
-    animation: float 3s ease-in-out infinite;
+    animation: float 2s ease-in-out infinite;
 }
 
 @keyframes float{
