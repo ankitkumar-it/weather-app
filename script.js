@@ -19,6 +19,51 @@ async function getWeather() {
 
         const data = await response.json();
         console.log(data);
+        const lat = data.coord.lat;
+const lon = data.coord.lon;
+
+const aqiUrl =
+`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+const aqiResponse = await fetch(aqiUrl);
+const aqiData = await aqiResponse.json();
+
+const aqi = aqiData.list[0].main.aqi;
+
+let aqiStatus = "";
+
+if(aqi === 1){
+    aqiStatus = "Good";
+}
+else if(aqi === 2){
+    aqiStatus = "Fair";
+}
+else if(aqi === 3){
+    aqiStatus = "Moderate";
+}
+else if(aqi === 4){
+    aqiStatus = "Poor";
+}
+else{
+    aqiStatus = "Very Poor";
+}
+let aqiClass = "";
+
+if(aqi === 1){
+    aqiClass = "aqi-good";
+}
+else if(aqi === 2){
+    aqiClass = "aqi-fair";
+}
+else if(aqi === 3){
+    aqiClass = "aqi-moderate";
+}
+else if(aqi === 4){
+    aqiClass = "aqi-poor";
+}
+else{
+    aqiClass = "aqi-very-poor";
+}
 
         if (data.cod == "404") {
 
@@ -29,6 +74,11 @@ async function getWeather() {
         }
 
         let condition = data.weather[0].main;
+        let windDirection = getWindDirection(data.wind.deg);
+        showWeatherAlert(
+    condition,
+    data.main.temp
+);
         let message = "";
 
 if(condition === "Clear"){
@@ -91,9 +141,28 @@ else if(condition === "Snow"){
 
         let sunset =
         new Date(data.sys.sunset * 1000).toLocaleTimeString();
+        let sunsetTime = new Date(data.sys.sunset * 1000);
+let nowTime = new Date();
+
+let timeUntilSunset =
+    Math.max(0, sunsetTime - nowTime);
+
+let hoursUntilSunset =
+    Math.floor(timeUntilSunset / (1000 * 60 * 60));
+
+let minutesUntilSunset =
+    Math.floor(
+        (timeUntilSunset % (1000 * 60 * 60))
+        / (1000 * 60)
+    );
         document.getElementById("weatherResult").innerHTML = `
-            <h2>${data.name}, ${data.sys.country}</h2>
-            <p>${dateTime}</p>
+          <h2>
+<img 
+    src="https://flagcdn.com/24x18/${data.sys.country.toLowerCase()}.png"
+    alt="${data.sys.country} flag">
+${data.name}, ${data.sys.country}
+</h2>
+            <p>🕒 Last updated: ${dateTime}</p>
 
             <div class="weather-icon">${icon}</div>
 
@@ -119,19 +188,36 @@ else if(condition === "Snow"){
     </div>
 
     <div class="stat-card">
-        <h3>🌬️</h3>
-        <p>${data.wind.speed}</p>
-        <span>Wind</span>
-    </div>
+    <h3>🌬️</h3>
+    <p>${data.wind.speed} m/s</p>
+    <span>Wind</span>
+    <p>🧭 ${windDirection}</p>
+</div>
+
+<div class="stat-card">
+    <h3>👀</h3>
+    <p>${(data.visibility / 1000).toFixed(1)} km</p>
+    <span>Visibility</span>
+</div>
+
+    <div class="stat-card aqi-card ${aqiClass}">
+    <h3>🌿</h3>
+    <p>${aqi}</p>
+    <span>Air Quality: ${aqiStatus}</span>
+</div>
 
 </div>
 
 <p>🌤️ Condition: ${condition}</p>
 
-            <p>🌅 Sunrise: ${sunrise}</p>
-            <p>🌇 Sunset: ${sunset}</p>
-            <p><b>${message}</b></p>
-`       ;
+<p>🌿 AQI: ${aqi}</p>
+<p>📊 Air Quality: ${aqiStatus}</p>
+
+<p>🌅 Sunrise: ${sunrise}</p>
+<p>🌇 Sunset: ${sunset}</p>
+<p>⏳ Sunset in: ${hoursUntilSunset}h ${minutesUntilSunset}m</p>
+<p><b>${message}</b></p>
+`      
 
     }catch(error){
 
@@ -309,4 +395,200 @@ for(let i = 0; i < 40; i += 8){
 
 document.getElementById("forecast").innerHTML =
 forecastHTML;
+createTemperatureChart(data);
+}function createTemperatureChart(data){
+
+    const labels = [];
+    const temperatures = [];
+
+    for(let i = 0; i < 8; i++){
+
+        let date = new Date(data.list[i].dt_txt);
+
+        let time = date.toLocaleTimeString("en-US", {
+            hour: "numeric"
+        });
+
+        labels.push(time);
+
+        temperatures.push(
+            Math.round(data.list[i].main.temp)
+        );
+    }
+
+    const ctx =
+    document.getElementById("tempChart");
+
+    new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [{
+                label: "Temperature °C",
+                data: temperatures,
+                tension: 0.4
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+                    beginAtZero: false
+                }
+
+            }
+
+        }
+
+    });
+}
+function addFavorite(){
+
+    const city =
+    document.getElementById("city").value;
+
+    if(city === ""){
+        alert("Please enter a city first");
+        return;
+    }
+
+    let favorites =
+    JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if(!favorites.includes(city)){
+
+        favorites.push(city);
+
+        localStorage.setItem(
+            "favorites",
+            JSON.stringify(favorites)
+        );
+
+        showFavorites();
+
+    }else{
+
+        alert("City is already in favorites");
+    }
+}
+function showFavorites(){
+
+    let favorites =
+    JSON.parse(localStorage.getItem("favorites")) || [];
+
+    let html = "";
+
+    favorites.forEach(city => {
+
+       html += `
+    <button onclick="selectFavorite('${city}')">
+        ⭐ ${city}
+    </button>
+
+    <button onclick="removeFavorite('${city}')">
+        ❌
+    </button>
+`;
+    });
+
+    document.getElementById("favorites").innerHTML =
+    html;
+}
+function selectFavorite(city){
+
+    document.getElementById("city").value = city;
+
+    getWeather();
+}
+showFavorites();
+
+
+
+function showWeatherAlert(condition, temperature){
+
+    let alertBox =
+    document.getElementById("weatherAlert");
+
+    alertBox.innerHTML = "";
+
+    if(condition === "Thunderstorm"){
+
+        alertBox.innerHTML =
+        "⛈️ <b>Weather Alert:</b> Thunderstorm expected. Stay safe indoors!";
+
+    }
+    else if(condition === "Rain"){
+
+        alertBox.innerHTML =
+        "🌧️ <b>Weather Alert:</b> Rain expected. Don't forget your umbrella!";
+
+    }
+    else if(condition === "Snow"){
+
+        alertBox.innerHTML =
+        "❄️ <b>Weather Alert:</b> Snow expected. Stay warm!";
+
+    }
+    else if(temperature >= 40){
+
+        alertBox.innerHTML =
+        "🌡️ <b>Heat Alert:</b> Very high temperature. Stay hydrated!";
+
+    }
+}
+function removeFavorite(city){
+
+    let favorites =
+    JSON.parse(localStorage.getItem("favorites")) || [];
+
+    favorites = favorites.filter(
+        item => item !== city
+    );
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+    showFavorites();
+}function getFlagEmoji(countryCode){
+
+    return countryCode
+        .toUpperCase()
+        .replace(/./g, char =>
+            String.fromCodePoint(
+                127397 + char.charCodeAt()
+            )
+        );
+}
+function getWindDirection(degrees){
+
+    const directions = [
+        "N", "NE", "E", "SE",
+        "S", "SW", "W", "NW"
+    ];
+
+    const index =
+        Math.round(degrees / 45) % 8;
+
+    return directions[index];
+}
+function showSection(sectionId){
+
+    document.querySelectorAll(".page-section")
+    .forEach(section => {
+        section.style.display = "none";
+    });
+
+    document.getElementById(sectionId)
+    .style.display = "block";
 }
