@@ -19,7 +19,25 @@
             type="text"
             id="city"
             placeholder="Enter city">
+        <nav class="nav-menu">
 
+    <button onclick="showSection('home')">
+        🏠 Home
+    </button>
+
+    <button onclick="showSection('forecastSection')">
+        📅 Forecast
+    </button>
+
+    <button onclick="showSection('detailsSection')">
+        📊 Details
+    </button>
+
+    <button onclick="showSection('favoritesSection')">
+        ⭐ Favorites
+    </button>
+
+</nav>
         <div class="button-group">
 
         <button onclick="getWeather()">
@@ -30,19 +48,46 @@
             📍 My Location
         </button>
 
+        <button onclick="addFavorite()">
+    ⭐ Add Favorite
+</button>
+
         <button onclick="toggleDarkMode()">
              🌙 Dark Mode
         </button>
 
 </div>
-
+        <div id="home" class="page-section">
         <div id="weatherResult">
               <h3>🌍 Search a city to get weather updates</h3>
         </div>
-        <div id="forecast"></div>
+        <div id="weatherAlert"></div>
+        
+</div>
+<div id="forecastSection" class="page-section">
+
+    <div id="forecast"></div>
+
+</div>
+<div id="detailsSection" class="page-section">
+
+    <h2>📊 Weather Details</h2>
+
+    <div id="weatherDetails"></div>
+
+</div>
+<div id="favoritesSection" class="page-section">
+
+    <h2>⭐ Favorite Cities</h2>
+
+    <div id="favorites"></div>
+
+</div>
+    
+        <canvas id="tempChart"></canvas>
 
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 
 </body>
