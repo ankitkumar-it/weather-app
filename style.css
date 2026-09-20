@@ -278,3 +278,125 @@ h1{
         transform:rotate(360deg);
     }
 }
+.aqi-card{
+    border: 2px solid #4caf50;
+}
+.aqi-good{
+    border:2px solid green;
+}
+
+.aqi-fair{
+    border:2px solid #c9a227;
+}
+
+.aqi-moderate{
+    border:2px solid orange;
+}
+
+.aqi-poor{
+    border:2px solid red;
+}
+
+.aqi-very-poor{
+    border:2px solid darkred;
+}
+#tempChart{
+    margin-top:30px;
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+.dark-mode #tempChart{
+    background:#2c2c2c;
+}
+#favorites{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+#favorites button{
+    background:#ffffff;
+    color:#1976d2;
+    border:1px solid #1976d2;
+    padding:8px 12px;
+    border-radius:20px;
+    font-size:14px;
+}
+
+#favorites button:hover{
+    background:#1976d2;
+    color:white;
+}
+@media (max-width:600px){
+
+    body{
+        padding:10px;
+    }
+
+    .container{
+        width:100%;
+        padding:20px 10px;
+    }
+
+    h1{
+        font-size:27px;
+    }
+
+    .tagline{
+        font-size:14px;
+    }
+
+    input{
+        width:90%;
+        box-sizing:border-box;
+    }
+
+    .button-group{
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    button{
+        font-size:14px;
+        padding:10px 12px;
+    }
+
+    #weatherResult h1.temp{
+        font-size:50px;
+    }
+
+    .weather-icon{
+        font-size:70px;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .stat-card{
+        padding:10px;
+    }
+
+    .stat-card h3{
+        font-size:20px;
+    }
+
+    .stat-card p{
+        font-size:16px;
+    }
+
+    #forecast{
+        gap:6px;
+    }
+
+    .forecast-card{
+        width:65px;
+        padding:8px;
+    }
+
+}
